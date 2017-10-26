@@ -21,3 +21,17 @@ def swapPIN(req, q=0, t=0):
     req.send_http_header()
     return '{"currentStatus":%s}' % str(gpio.input(q))
 
+def Auto(req, t):
+    t = int(t)
+    w = 'r'
+    with open('/var/www/autoMode.db',w) as f:
+        status = bool(f.read())
+    if t:
+        with open('/var/www/autoMode.db','w') as f:
+            status = not status
+            f.write(str(int(status)))
+    req.content_type = "text/javascript"
+    req.send_http_header()
+    return '{"currentStatus":%s}' % str(int(status))
+
+    

@@ -28,11 +28,40 @@ function updateBttn(q,t) {
     }
 }
 
+function Auto(t) {
+    var bttn = $("#auto")
+    var json = null;
+    $.ajax({
+	'async': false,
+	'global': false,
+	'url': "cgi-bin/hello.py/Auto?t="+t,
+	'dataType': "json",
+	'success': function (data) {
+	    json = data;
+	    console.log(json.currentStatus)
+	}
+    });
+//    console.log(json.currentStatus)
+    if (json.currentStatus == 1) {
+	bttn.css({
+	    "background-color":"green"
+	});
+    } else {
+	bttn.css({
+	    "background-color":"red"
+	});
+    }
+}
+
 window.setInterval(function(){
     $("button").each(function () {
-	updateBttn($(this).attr("pin"),0);
-    });    
-}, 100);
+	if ($(this).attr("pin")) {
+	    //console.log("Updating pin "+$(this).attr("pin"));
+	    updateBttn($(this).attr("pin"),0);
+	}
+    });
+    Auto(0);
+}, 500);
 
 $(document).ready(function() {
     $("button").css({
@@ -44,10 +73,7 @@ $(document).ready(function() {
     $(".fullw").css({
 	"width":465
     });
-    //$("h2").text(window.screen.width+"x"+window.screen.height);
-    $("button").click(function() {
-	var q = $(this).attr("pin");
-	updateBttn(q,1);
-    });
+    $("button").click(updateBttn($(this).attr("pin"),1));
+    $("#auto").click(Auto(1));
 });
 
