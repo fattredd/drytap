@@ -1,38 +1,53 @@
+function PINctrl(q,t) {
+    var json = null;
+    $.ajax({
+	'async': false,
+	'global': false,
+	'url': "cgi-bin/hello.py/swapPIN?q="+q+"&t="+t,
+	'dataType': "json",
+	'success': function (data) {
+	    json = data;
+	}
+    });
+    return json.currentStatus;
+}
+
+function updateBttn(q,t) {
+    var bttn = $("button[pin="+q+"]");
+    var cStatus = PINctrl(q,t);
+    if (cStatus == 1) {
+	//bttn.text("ON");
+	bttn.css({
+	    "background-color":"green"
+	});
+    } else {
+	//bttn.text("OFF");
+	bttn.css({
+	    "background-color":"red"
+	});
+    }
+}
+
+window.setInterval(function(){
+    $("button").each(function () {
+	updateBttn($(this).attr("pin"),0);
+    });    
+}, 100);
 
 $(document).ready(function() {
     $("button").css({
-	"width":465, // use this as max width
+	"width":230, // use 465 as max width
 	"height":150,
 	"font-size":"50px",
 	"background-color":"cyan"
     });
-    $("h2").text(window.screen.width+"x"+window.screen.height);
+    $(".fullw").css({
+	"width":465
+    });
+    //$("h2").text(window.screen.width+"x"+window.screen.height);
     $("button").click(function() {
-	var cStatus = (function () {
-	    var json = null;
-	    $.ajax({
-		'async': false,
-		'global': false,
-		'url': "cgi-bin/hello.py/swapLED",
-		'dataType': "json",
-		'success': function (data) {
-		    json = data;
-		}
-	    });
-	    return json.currentStatus;
-	})(); 
-	console.log(cStatus);
-	if (cStatus == 1) {
-	    $(this).text("ON");
-	    $(this).css({
-		"background-color":"green"
-	    });
-	} else {
-	    $(this).text("OFF");
-	    $(this).css({
-		"background-color":"red"
-	    });
-	}
+	var q = $(this).attr("pin");
+	updateBttn(q,1);
     });
 });
 
