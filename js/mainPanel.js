@@ -9,7 +9,12 @@ function PINctrl(q,t) {
 	    json = data;
 	}
     });
-    return json.currentStatus;
+    if (json == null) {
+	console.log("Error with pin "+q+" and toggle="+t);
+	return false;
+    } else {
+	return json.currentStatus;
+    }
 }
 
 function updateBttn(q,t) {
@@ -65,7 +70,7 @@ window.setInterval(function(){
 
 $(document).ready(function() {
     $("button").css({
-	"width":230, // use 465 as max width
+	"width":210, // use 465 as max width
 	"height":150,
 	"font-size":"50px",
 	"background-color":"cyan"
@@ -73,7 +78,12 @@ $(document).ready(function() {
     $(".fullw").css({
 	"width":465
     });
-    $("button").click(updateBttn($(this).attr("pin"),1));
-    $("#auto").click(Auto(1));
+    $("button").click(function() {
+	console.log("Clicked "+$(this).attr("pin"));
+	updateBttn($(this).attr("pin"),1);
+    });
+    $("#auto").click(function() {
+	Auto(1);
+    });
 });
 
