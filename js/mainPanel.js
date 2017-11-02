@@ -43,10 +43,10 @@ function Auto(t) {
 	'dataType': "json",
 	'success': function (data) {
 	    json = data;
-	    console.log(json.currentStatus)
+	    //console.log(json.currentStatus)
 	}
     });
-//    console.log(json.currentStatus)
+    //console.log(json.currentStatus)
     if (json.currentStatus == 1) {
 	bttn.css({
 	    "background-color":"green"
@@ -79,8 +79,11 @@ $(document).ready(function() {
 	"width":465
     });
     $("button").click(function() {
-	console.log("Clicked "+$(this).attr("pin"));
-	updateBttn($(this).attr("pin"),1);
+	var pin = $(this).attr("pin");
+	//console.log("Clicked "+pin);
+	if (pin != undefined) {
+	    updateBttn(pin,1);
+	}
     });
     $("#auto").click(function() {
 	Auto(1);

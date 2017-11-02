@@ -2,6 +2,7 @@
 
 from mod_python import apache
 import RPi.GPIO as gpio
+import sqlite3 as sql
 
 def js(req):
     import time
@@ -23,15 +24,34 @@ def swapPIN(req, q=0, t=0):
 
 def Auto(req, t):
     t = int(t)
-    w = 'r'
-    with open('/var/www/autoMode.db',w) as f:
+    comm = ""
+    state = None
+    con = sql.connect('/var/www/data/file.db')
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT state FROM Auto")
+        state = cur.fetchone()[0]
+        if (t == 1):
+            state = int(not bool(state))
+            comm += "State is now "+str(state)
+            cur.execute("DELETE FROM Auto WHERE 1 = 1")
+            cur.execute("INSERT INTO Auto VALUES(%d)" % state)
+        con.commit()
+    req.content_type = "text/javascript"
+    req.send_http_header()
+    return '{"currentStatus":%d,"Comment":"%s"}' % (state,comm)
+
+
+'''
+def Auto(req, t):
+    t = int(t)
+    with open('/var/www/autoMode.db','r+') as f:
         status = bool(f.read())
-    if t:
+    if t == 1:
         with open('/var/www/autoMode.db','w') as f:
             status = not status
             f.write(str(int(status)))
     req.content_type = "text/javascript"
     req.send_http_header()
     return '{"currentStatus":%s}' % str(int(status))
-
-    
+# ''' 
