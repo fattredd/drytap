@@ -40,18 +40,3 @@ def Auto(req, t):
     req.content_type = "text/javascript"
     req.send_http_header()
     return '{"currentStatus":%d,"Comment":"%s"}' % (state,comm)
-
-
-'''
-def Auto(req, t):
-    t = int(t)
-    with open('/var/www/autoMode.db','r+') as f:
-        status = bool(f.read())
-    if t == 1:
-        with open('/var/www/autoMode.db','w') as f:
-            status = not status
-            f.write(str(int(status)))
-    req.content_type = "text/javascript"
-    req.send_http_header()
-    return '{"currentStatus":%s}' % str(int(status))
-# ''' 
