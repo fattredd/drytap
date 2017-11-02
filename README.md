@@ -15,3 +15,5 @@ as well as which pin it'll control/report.
 - Create an auto mode
  - Steps through a certain sequence
  - Stops afterwards
+
+I have created the Daemon using Sander Marechal's sample found [here](http://web.archive.org/web/20131017130434/http://www.jejik.com/articles/2007/02/a_simple_unix_linux_daemon_in_python/).

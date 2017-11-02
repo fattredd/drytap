@@ -26,16 +26,20 @@ def Auto(req, t):
     t = int(t)
     comm = ""
     state = None
-    con = sql.connect('/var/www/data/file.db')
+    con = sql.connect('/var/www/data/autoOn.db')
     with con:
         cur = con.cursor()
-        cur.execute("SELECT state FROM Auto")
+        try:
+            cur.execute("SELECT state FROM Auto")
+        except:
+            cur.execute("create table Auto(state INT)")
+            cur.execute("INSERT INTO Auto VALUES(0)")
+            cur.execute("SELECT state FROM Auto")
         state = cur.fetchone()[0]
         if (t == 1):
             state = int(not bool(state))
             comm += "State is now "+str(state)
-            cur.execute("DELETE FROM Auto WHERE 1 = 1")
-            cur.execute("INSERT INTO Auto VALUES(%d)" % state)
+            cur.execute("UPDATE Auto SET state = %d" % state)
         con.commit()
     req.content_type = "text/javascript"
     req.send_http_header()
