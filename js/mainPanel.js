@@ -1,3 +1,5 @@
+currentlyAuto = false;
+
 function PINctrl(q,t) {
     var json = null;
     $.ajax({
@@ -31,6 +33,11 @@ function updateBttn(q,t) {
 	    "background-color":"red"
 	});
     }
+    if (currentlyAuto) {
+	bttn.css({"text-decoration":"line-through"});
+    } else {
+	bttn.css({"text-decoration":"none"});
+    }
 }
 
 function Auto(t) {
@@ -43,7 +50,6 @@ function Auto(t) {
 	'dataType': "json",
 	'success': function (data) {
 	    json = data;
-	    //console.log(json.currentStatus)
 	}
     });
     //console.log(json.currentStatus)
@@ -56,6 +62,7 @@ function Auto(t) {
 	    "background-color":"red"
 	});
     }
+    currentlyAuto = json.currentStatus;
 }
 
 window.setInterval(function(){
@@ -81,7 +88,7 @@ $(document).ready(function() {
     $("button").click(function() {
 	var pin = $(this).attr("pin");
 	//console.log("Clicked "+pin);
-	if (pin != undefined) {
+	if (pin != undefined & !currentlyAuto) {
 	    updateBttn(pin,1);
 	}
     });

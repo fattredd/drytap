@@ -15,7 +15,7 @@ class Daemon:
 		self.stderr = stderr
 		self.pidfile = pidfile
 	
-	def daemonize(self):
+ 	def daemonize(self):
 		"""
 		do the UNIX double-fork magic, see Stevens' "Advanced 
 		Programming in the UNIX Environment" for details (ISBN 0201563177)
@@ -37,7 +37,7 @@ class Daemon:
 	
 		# do second fork
 		try: 
-			pid = os.fork() 
+			pid = os.fork()
 			if pid > 0:
 				# exit from second parent
 				sys.exit(0) 
@@ -129,5 +129,16 @@ class Daemon:
 		"""
                 pass
 
-        def log(self, info):
-                pass
+        def report(self):
+                try:
+			pf = file(self.pidfile,'r')
+			pid = int(pf.read().strip())
+			pf.close()
+		except IOError:
+			pid = None
+		if pid:
+			message = "Service is running.\n"
+                else:
+                        message = "Service not running.\n"
+                sys.stderr.write(message)
+		sys.exit(1)

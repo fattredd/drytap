@@ -4,11 +4,20 @@ import sys, time
 from daemon import Daemon
 import sqlite3 as sql
 import RPi.GPIO as gpio
+import logging
+from logging.handlers import RotatingFileHandler
 
 class AutoTap(Daemon):
 	def run(self):
+                log_formatter = logging.Formatter('%(message)s')
+                logFile = '/tmp/auto.log'
+                handler = RotatingFileHandler(logFile, mode='a', maxBytes=5*1024*1024,
+                                              backupCount=1, encoding=None, delay=0)
+                handler.setFormatter(log_formatter)
+                log = logging.getLogger('root')
+                log.addHandler(handler)
+                
                 while True:
-                        state = None
                         with sql.connect('/var/www/data/autoOn.db') as con:
                                 cur = con.cursor()
                                 try:
@@ -28,31 +37,32 @@ class AutoTap(Daemon):
                                         cur.execute("SELECT current FROM Step")
                                         current = cur.fetchone()[0]
                                         cur.execute("SELECT pin, state FROM Proc WHERE step == '%s'" % current)
-                                        pins = cur.fetchall()
+                                        pinstate = cur.fetchall()
+                                        pins = [i[0] for i in pinstate]
+                                        states = [i[1] for i in pinstate]
                                         cur.execute("SELECT delay FROM Time WHERE step == %s" % current)
                                         delay = cur.fetchone()[0]
                                         cur.execute("SELECT Count(*) FROM Time")
                                         totalStates = cur.fetchone()[0]
                                         nextState = (current+1)%totalStates
                                         cur.execute("UPDATE Step SET current = %s" % nextState)
+                                gpio.setwarnings(False)
                                 gpio.setmode(gpio.BOARD)
-                                import sys
-                                sys.stderr.write("Pins:")
-                                sys.stderr.write(type(pins))
                                 gpio.setup(pins, gpio.OUT)
-                                for pin, state in pins:
-                                        #gpio.output(pin, state)
-                                        pass
-                                time.delay(delay)
-                                
+                                log.info("Now in state %s.\n" % current)
+                                for pin, state in pinstate:
+                                        gpio.output(pin, state)
+                                        log.info("\t%s | %s\n" % (pin,state))
+                                time.sleep(delay / 1000.0)
+                                log.info("  Delay for %s ms\n" % delay)
                         else:
                                 # Do nothing
-                                time.sleep(500)
+                                time.sleep(0.5)
                         
 
                 
 if __name__ == "__main__":
-	daemon = AutoTap('/tmp/AutoTap.pid',stderr='/tmp/AutoTap.log')
+	daemon = AutoTap('/tmp/AutoTap.pid',stderr='/tmp/autoErr.log')
 	if len(sys.argv) == 2:
 		if 'start' == sys.argv[1]:
 			daemon.start()
@@ -60,6 +70,8 @@ if __name__ == "__main__":
 			daemon.stop()
 		elif 'restart' == sys.argv[1]:
 			daemon.restart()
+                elif 'status' == sys.argv[1]:
+                        daemon.report()
 		else:
 			print "Unknown command"
 			sys.exit(2)
