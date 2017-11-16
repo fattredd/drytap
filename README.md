@@ -28,7 +28,7 @@ need to set the state of at least one pin, or it won't run properly.
 |  19 | Capping  |
 
 | State | I | F | P | C | Delay |
-| ----- | ----- | ----- | ----- |
+| --- | --- |
 |     0 | 0 | 0 | 0 | 0 |    -1 |
 |     1 | 1 | 0 | 0 | 0 |  2000 |
 |     2 | 1 | 1 | 0 | 1 |  1000 |
