@@ -18,6 +18,24 @@ In the html file you can set the name of buttons, as well as which pin it'll con
 data/states.db contains the automatic steps. when a delay of -1 is reached,
 the system will stop and wait for user input to continue. Note that that step will still
 need to set the state of at least one pin, or it won't run properly.
+  
+### States.db:
+| Pin | Purpose  |
+|-----+----------|
+|  11 | Indexing |
+|  13 | Filling  |
+|  15 | Pinching |
+|  19 | Capping  |
+
+| State | I | F | P | C | Delay |
+|-------+---+---+---+---+-------|
+|     0 | 0 | 0 | 0 | 0 |    -1 |
+|     1 | 1 | 0 | 0 | 0 |  2000 |
+|     2 | 1 | 1 | 0 | 1 |  1000 |
+|     3 | 1 | 1 | 1 | 0 | 10000 |
+|     4 | 1 | 1 | 0 | 0 |   500 |
+|     5 | 1 | 0 | 0 | 0 |  1000 |
+|     6 | 0 | 0 | 0 | 0 |   500 |
 
 ## Todo:
 - Implement auto mode pauses

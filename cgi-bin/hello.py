@@ -29,17 +29,30 @@ def Auto(req, t):
     con = sql.connect('/var/www/data/autoOn.db')
     with con:
         cur = con.cursor()
-        try:
-            cur.execute("SELECT state FROM Auto")
-        except:
-            cur.execute("create table Auto(state INT)")
-            cur.execute("INSERT INTO Auto VALUES(0)")
-            cur.execute("SELECT state FROM Auto")
+        cur.execute("SELECT state FROM Auto")
         state = cur.fetchone()[0]
         if (t == 1):
             state = int(not bool(state))
             comm += "State is now "+str(state)
             cur.execute("UPDATE Auto SET state = %d" % state)
+        con.commit()
+    req.content_type = "text/javascript"
+    req.send_http_header()
+    return '{"currentStatus":%d,"Comment":"%s"}' % (state,comm)
+
+def Continue(req, t):
+    t = int(t)
+    comm = ""
+    state = None
+    con = sql.connect('/var/www/data/autoOn.db')
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT current FROM paused")    
+        state = cur.fetchone()[0]
+        if (t == 1 && state == 1):
+            state = 0
+            comm += "State is now "+str(state)
+            cur.execute("UPDATE paused SET current = %d" % state)
         con.commit()
     req.content_type = "text/javascript"
     req.send_http_header()

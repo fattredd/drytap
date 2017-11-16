@@ -35,14 +35,11 @@ class AutoTap(Daemon):
                 while True:
                         with sql.connect('/var/www/data/autoOn.db') as con:
                                 cur = con.cursor()
-                                try:
-                                        cur.execute("SELECT state FROM Auto")
-                                except:
-                                        cur.execute("create table Auto(state INT)")
-                                        cur.execute("INSERT INTO Auto VALUES(0)")
-                                        cur.execute("SELECT state FROM Auto")
+                                cur.execute("SELECT state FROM Auto")
                                 running = bool(cur.fetchone()[0])
-                        if running:
+                                cur.execute("SELECT current FROM paused")
+                                paused = bool(cur.fetchone()[0])
+                        if running and not paused:
                                 # Step Through the code
                                 pins = None
                                 delay = None
@@ -61,16 +58,18 @@ class AutoTap(Daemon):
                                         totalStates = cur.fetchone()[0]
                                         nextState = (current+1)%totalStates
                                         cur.execute("UPDATE Step SET current = %s" % nextState)
-                                if delay == -1:
-                                        running = false
+                                gpio.setup(pins, gpio.OUT)
+                                log.info("Now in state %s.\n" % current)
+                                for pin, state in pinstate:
+                                        gpio.output(pin, state)
+                                        log.info("\t%s | %s\n" % (pin,state))
+                                if delay >= 0:
+                                        time.sleep(delay / 1000.0)
+                                        log.info("  Delay for %s ms\n" % delay)
                                 else:
-                                        gpio.setup(pins, gpio.OUT)
-                                        log.info("Now in state %s.\n" % current)
-                                        for pin, state in pinstate:
-                                                gpio.output(pin, state)
-                                                log.info("\t%s | %s\n" % (pin,state))
-                                                time.sleep(delay / 1000.0)
-                                                log.info("  Delay for %s ms\n" % delay)
+                                        with sql.connect('/var/www/data/states.db') as con:
+                                                cur = con.cursor()
+                                                cur.execute("UPDATE paused SET current = %s" % 1)
                         else:
                                 # Do nothing
                                 time.sleep(0.5)

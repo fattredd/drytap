@@ -3,6 +3,8 @@
 # Run this first. It will place all config files and junk
 
 { crontab -l -u root; echo '@reboot /usr/bin/python /var/www/daemon/autoControl.py start'; } | crontab -u root -
+{ crontab -l -u root; echo "@reboot sqlite3 /var/www/data/autoOn.db 'UPDATE Auto SET state = 0;'"; } | crontab -u root -
+{ crontab -l -u root; echo "@reboot sqlite3 /var/www/data/states.db 'UPDATE Step SET current = 0;'"; } | crontab -u root -
 
 set +e
 cd /tmp

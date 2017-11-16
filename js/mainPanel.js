@@ -57,9 +57,47 @@ function Auto(t) {
 	bttn.css({
 	    "background-color":"green"
 	});
+	$("#continue").click(function () {
+	    Continue(1);
+	});
+	$("#continue").css({
+	    "text-decoration":"none"
+	});
     } else {
 	bttn.css({
 	    "background-color":"red"
+	});
+	$("#continue").css({
+	    "background-color":"grey",
+	    "text-decoration":"line-through"
+	});
+	$("#continue").click(function () {
+	    Continue(1);
+	});
+    }
+    currentlyAuto = json.currentStatus;
+}
+
+function Continue(t) {
+    var bttn = $("#continue")
+    var json = null;
+    $.ajax({
+	'async': false,
+	'global': false,
+	'url': "cgi-bin/hello.py/Continue?t="+t,
+	'dataType': "json",
+	'success': function (data) {
+	    json = data;
+	}
+    });
+    //console.log(json.currentStatus)
+    if (json.currentStatus == 1) {
+	bttn.css({
+	    "background-color":"blue"
+	});
+    } else {
+	bttn.css({
+	    "background-color":"grey"
 	});
     }
     currentlyAuto = json.currentStatus;
@@ -73,6 +111,7 @@ window.setInterval(function(){
 	}
     });
     Auto(0);
+    Continue(0);
 }, 500);
 
 $(document).ready(function() {
