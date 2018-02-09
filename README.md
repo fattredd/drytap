@@ -43,15 +43,15 @@ I have created the Daemon using Sander Marechal's sample found [here](http://web
 
 ## Mechanical System
 
-The vast majority of the mechanical ocumentation can be found in our [report](/report.pdf), but here are a few basics.
+The vast majority of the mechanical ocumentation can be found in our [report](/report.pdf), but here are a few basics.  
   
 Here are some pictures of the mechanisms. This one is the filling area taken from down the queue.  
 ![Filling area and queue](/img/fill.png)  
   
-This one is the capping press, taken from the opposite side of the machine.
-![Capping Press](/img/press.png)
-
-
+This one is the capping press, taken from the opposite side of the machine.  
+![Capping Press](/img/press.png)  
+  
+  
 ### Price Breakdown
 ![Price Breakdown](/img/cost.png)  
 
