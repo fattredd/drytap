@@ -1,11 +1,12 @@
 # Dry Tap Bottler
 
 This is a raspberry pi webserver that works with the Dry Tap Bottling System.  
-It is still a WIP, and is currently able to toggle several LEDs
+
+![Final Product](/img/product.png)
 
 Here's the basic breakdown of how this works:
   
-[there will be a diagram here]
+![Flow Chart](/img/flowchart.png)
   
 ## Setup / Config
 Run config/install.sh to install mod_python, and configure the apache2.conf file.
@@ -22,25 +23,35 @@ need to set the state of at least one pin, or it won't run properly.
 ### States.db:
 | Pin | Purpose  |
 | --- | -------- |
-|  11 | Indexing |
-|  13 | Filling  |
-|  15 | Pinching |
-|  19 | Capping  |
+|  11 | __I__ ndexing |
+|  13 | __F__ illing  |
+|  15 | __P__ inching |
+|  19 | __C__ apping  |
 
-| State | I | F | P | C | Delay |
-| --- | --- |
-|     0 | 0 | 0 | 0 | 0 |    -1 |
-|     1 | 1 | 0 | 0 | 0 |  2000 |
-|     2 | 1 | 1 | 0 | 1 |  1000 |
-|     3 | 1 | 1 | 1 | 0 | 10000 |
-|     4 | 1 | 1 | 0 | 0 |   500 |
-|     5 | 1 | 0 | 0 | 0 |  1000 |
-|     6 | 0 | 0 | 0 | 0 |   500 |
+| State | __I__ | __F__ | __P__ | __C__ | Delay |
+| ----- | ----- | ----- | ----- | ----- | ----- |
+|     0 |   0   |   0   |   0   |   0   |    -1 |
+|     1 |   1   |   0   |   0   |   0   |  2000 |
+|     2 |   1   |   1   |   0   |   1   |  1000 |
+|     3 |   1   |   1   |   1   |   0   | 10000 |
+|     4 |   1   |   1   |   0   |   0   |   500 |
+|     5 |   1   |   0   |   0   |   0   |  1000 |
+|     6 |   0   |   0   |   0   |   0   |   500 |
 
-## Todo:
-- Implement auto mode pauses
-- Populate the states.db
-- Assign pins to outputs
+  
+I have created the Daemon using Sander Marechal's sample found [here](http://web.archive.org/web/20131017130434/http://www.jejik.com/articles/2007/02/a_simple_unix_linux_daemon_in_python/).  
+
+## Mechanical System
+
+The vast majority of the mechanical ocumentation can be found in our [report](/report.pdf), but here are a few basics.
+  
+Here are some pictures of the mechanisms. This one is the filling area taken from down the queue.  
+![Filling area and queue](/img/fill.png)  
+  
+This one is the capping press, taken from the opposite side of the machine.
+![Capping Press](/img/press.png)
 
 
-I have created the Daemon using Sander Marechal's sample found [here](http://web.archive.org/web/20131017130434/http://www.jejik.com/articles/2007/02/a_simple_unix_linux_daemon_in_python/).
+### Price Breakdown
+![Price Breakdown](/img/cost.png)  
+
