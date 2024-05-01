@@ -64,4 +64,4 @@ spidev==3.0
 touchphat==0.0.1
 twython==3.4.0
 urllib3==1.26.5
-Werkzeug==2.2.3
+Werkzeug==2.3.8
